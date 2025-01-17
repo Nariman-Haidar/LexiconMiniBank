@@ -23,6 +23,9 @@ public class Main {
                 case 3:
                     active = false;
                     break;
+                default:
+                    System.out.println("Invalid choice");
+                    break;
             }
         }
     }
@@ -38,13 +41,10 @@ public class Main {
     private static void createUser() {
         System.out.print("Enter Social Security Number (######-####): ");
         String socialSecurityNumber = sc.nextLine();
-        System.out.print("Your Social Security Number is : " + socialSecurityNumber);
         System.out.print("Enter PIN (4 digits): ");
         int pin = Integer.parseInt(sc.nextLine());
-        System.out.print("Your Pin Number is : " + pin);
         Bank.createUser(socialSecurityNumber, pin);
     }
-
 
     private static void logIn() {
         for (int attempts = 0; attempts < 3; attempts++) {
@@ -52,42 +52,46 @@ public class Main {
             String socialSecurityNumber = sc.nextLine();
             System.out.print("Enter PIN: ");
             int pin = Integer.parseInt(sc.nextLine());
-
             currentUser = Bank.authenticate(socialSecurityNumber, pin);
             if (currentUser != null) {
                 System.out.println("Logged in successfully.");
-
-                // User menu
-                boolean active = true;
-                while (active) {
-                    System.out.println("\n1. View Accounts");
-                    System.out.println("2. Make a Transfer");
-                    System.out.println("3. Log out");
-                    System.out.print("Enter your choice please: ");
-                    int choice = Integer.parseInt(sc.nextLine());
-
-                    switch (choice) {
-                        case 1:
-                            viewAccounts();
-                            break;
-                        case 2:
-                            depositMoney();
-                        case 3:
-                            makeTransfer();
-                            break;
-                        case 4:
-                            active = false;
-                            break;
-                        default:
-                            System.out.println("Invalid choice. Try again.");
-                    }
-                }
+                userMenu();
                 return;
             } else {
                 System.out.println("Invalid Social Security Number or PIN. Try again.");
             }
         }
         System.out.println("Maximum attempts reached. Exiting...");
+    }
+
+    private static void userMenu() {
+        boolean active = true;
+        while (active) {
+            System.out.println("\n1. View Accounts");
+            System.out.println("2. Deposit Money");
+            System.out.println("3. Make a Transfer");
+            System.out.println("4. Log out");
+            System.out.print("Enter your choice please: ");
+            int choice = Integer.parseInt(sc.nextLine());
+            switch (choice) {
+                case 1:
+                    viewAccounts();
+                    break;
+                case 2:
+                    depositMoney();
+                    break;
+                case 3:
+                    makeTransfer();
+                    break;
+                case 4:
+                    logOut();
+                    active = false; // Exit user menu
+                    break;
+                default:
+                    System.out.println("Invalid choice. Try again.");
+                    break;
+            }
+        }
     }
 
     private static void viewAccounts() {
@@ -110,12 +114,46 @@ public class Main {
     }
 
     private static void makeTransfer() {
-        System.out.print("Choose from which account (Salary/Savings): ");
+        System.out.print("Choose account to transfer from (Salary/Savings): ");
         String fromAccountType = sc.nextLine();
         System.out.print("Enter recipient account number: ");
-        long toAccountNumber = Long.parseLong(sc.nextLine());
-        System.out.print("Enter amount: ");
-        double amount = Double.parseDouble(sc.nextLine());
+        long toAccountNumber = getLongInput("Invalid account number. Please enter a valid number: ");
+        double amount = getDoubleInput("Enter transfer amount: ");
         Bank.transfer(currentUser, fromAccountType, toAccountNumber, amount);
+    }
+
+    private static void logOut() {
+        System.out.println("Logging out...");
+        currentUser = null;
+    }
+
+    private static int getIntInput(String errorMessage) {
+        while (true) {
+            try {
+                return Integer.parseInt(sc.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println(errorMessage);
+            }
+        }
+    }
+
+    private static double getDoubleInput(String errorMessage) {
+        while (true) {
+            try {
+                return Double.parseDouble(sc.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println(errorMessage);
+            }
+        }
+    }
+
+    private static long getLongInput(String errorMessage) {
+        while (true) {
+            try {
+                return Long.parseLong(sc.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println(errorMessage);
+            }
+        }
     }
 }

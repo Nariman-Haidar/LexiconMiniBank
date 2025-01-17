@@ -3,7 +3,7 @@ public class Account {
     private double balance;
     private long accountNumber = 0;
 
-    public Account(String accountType) {
+    public Account(String accountType, long accountNumber) {
         this.accountType = accountType;
         this.balance = balance;
         this.accountNumber = accountNumber;

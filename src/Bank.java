@@ -4,7 +4,7 @@ import java.util.List;
 public class Bank {
     // List to store LexAccount objects
     public static List<User> users = new ArrayList<>();
-    public static long accountNumber = 0;
+    public static long accountNumberCounter = 0;
 
     // Constructor for LexBank
     private Bank() {
@@ -38,6 +38,11 @@ public class Bank {
         return null;
     }
 
+    // Method to generate unique account numbers
+    public static long generateAccountNumber() {
+        return accountNumberCounter++;
+    }
+
     // Method to transfer between accounts that takes account numbers and amount as arguments
     public static void transfer(User user, String fromAccountType, long toAccountNumber, double amount) {
         Account fromAccount = fromAccountType.equalsIgnoreCase("Salary") ? user.getSalaryAccount() : user.getSavingsAccount();
@@ -67,8 +72,5 @@ public class Bank {
             }
         }
         return null;
-
-
-        //
     }
 }
